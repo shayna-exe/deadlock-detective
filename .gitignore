@@ -1,0 +1,22 @@
+# Virtual environments
+.venv/
+.venv-*/
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Build files
+build/
+dist/
+
+# IDE
+.vscode/
+
+# Local settings
+config/monitor_settings.json
+
+# Generated reports
+reports/*.json
+!reports/.gitkeep

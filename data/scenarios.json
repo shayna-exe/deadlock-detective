@@ -1,0 +1,62 @@
+{
+  "scenarios": [
+    {
+      "name": "Safe execution",
+      "description": "P2 has to wait for lock A, but P1 releases it, the lock is handed to P2, and everyone finishes. A process waiting is not the same as a deadlock.",
+      "processes": ["P1", "P2"],
+      "locks": ["A", "B"],
+      "events": [
+        {"process": "P1", "op": "ACQUIRE", "lock": "A"},
+        {"process": "P2", "op": "REQUEST", "lock": "A"},
+        {"process": "P1", "op": "ACQUIRE", "lock": "B"},
+        {"process": "P1", "op": "RELEASE", "lock": "B"},
+        {"process": "P1", "op": "RELEASE", "lock": "A"},
+        {"process": "P2", "op": "ACQUIRE", "lock": "B"},
+        {"process": "P2", "op": "RELEASE", "lock": "B"},
+        {"process": "P2", "op": "RELEASE", "lock": "A"}
+      ]
+    },
+    {
+      "name": "Two-process deadlock",
+      "description": "P1 holds A and P2 holds B. Then P1 requests B and P2 requests A, so each waits for the other forever.",
+      "processes": ["P1", "P2"],
+      "locks": ["A", "B"],
+      "events": [
+        {"process": "P1", "op": "ACQUIRE", "lock": "A"},
+        {"process": "P2", "op": "ACQUIRE", "lock": "B"},
+        {"process": "P1", "op": "REQUEST", "lock": "B"},
+        {"process": "P2", "op": "REQUEST", "lock": "A"}
+      ]
+    },
+    {
+      "name": "Three-process deadlock",
+      "description": "P1 holds A, P2 holds B, P3 holds C. P1 wants B, P2 wants C, P3 wants A: a circular wait through three processes.",
+      "processes": ["P1", "P2", "P3"],
+      "locks": ["A", "B", "C"],
+      "events": [
+        {"process": "P1", "op": "ACQUIRE", "lock": "A"},
+        {"process": "P2", "op": "ACQUIRE", "lock": "B"},
+        {"process": "P3", "op": "ACQUIRE", "lock": "C"},
+        {"process": "P1", "op": "REQUEST", "lock": "B"},
+        {"process": "P2", "op": "REQUEST", "lock": "C"},
+        {"process": "P3", "op": "REQUEST", "lock": "A"}
+      ]
+    },
+    {
+      "name": "Lock-order conflict",
+      "description": "P1 takes A then B; later P2 takes B then A. They never overlap, so there is no deadlock now, but the opposite orders are a risk if they ever run concurrently.",
+      "processes": ["P1", "P2"],
+      "locks": ["A", "B"],
+      "events": [
+        {"process": "P1", "op": "ACQUIRE", "lock": "A"},
+        {"process": "P1", "op": "ACQUIRE", "lock": "B"},
+        {"process": "P1", "op": "RELEASE", "lock": "B"},
+        {"process": "P1", "op": "RELEASE", "lock": "A"},
+        {"process": "P2", "op": "ACQUIRE", "lock": "B"},
+        {"process": "P2", "op": "ACQUIRE", "lock": "A"},
+        {"process": "P2", "op": "RELEASE", "lock": "A"},
+        {"process": "P2", "op": "RELEASE", "lock": "B"}
+      ]
+    }
+  ]
+}

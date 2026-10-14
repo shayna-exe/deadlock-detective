@@ -1,0 +1,33 @@
+"""OS concept guide: each concept is tied to where it appears in this implementation (no Tk needed)."""
+from typing import List, Tuple
+
+GUIDE: List[Tuple[str, str, str]] = [
+    ("Process management", "A process is a running program with its own memory and a PID. The OS keeps a table of them.",
+     "Live Processes lists real processes via psutil (PID, parent PID, state). The simulator uses P1, P2... as SIMULATED processes."),
+    ("Process states", "Running, sleeping/waiting, stopped (suspended) or zombie. A waiting process is not necessarily stuck.",
+     "The Status column shows the OS state. Simulated processes are RUNNING, BLOCKED or ABORTED."),
+    ("Mutual exclusion", "A lock (mutex) lets only one process use a resource at a time.",
+     "Every simulated lock has one owner; ACQUIRE fails and REQUEST blocks if someone else holds it."),
+    ("Hold-and-wait", "A process keeps the locks it has while waiting for more.",
+     "A BLOCKED simulated process keeps its locks; the diagnosis text says what each process holds and waits for."),
+    ("No preemption", "Locks cannot be forcibly taken from the process that holds them.",
+     "The simulator never steals a lock. Only recovery (abort) releases it, which is why the explanation says the cycle must be broken from outside."),
+    ("Circular wait", "P1 waits for P2, P2 waits for P1 (or a longer loop). Together with the other three conditions this is a deadlock.",
+     "A cycle in the Wait-For Graph, drawn in red with its text form (P1 -> P2 -> P1)."),
+    ("Wait-For Graph", "Nodes are processes; an edge P1 -> P2 means P1 waits for a lock P2 holds.",
+     "simulator/wait_for_graph.py builds it from the lock state; edge labels show the lock responsible."),
+    ("DFS cycle detection", "Depth-first search marks nodes unvisited / on the current path / finished; reaching an on-path node means a cycle.",
+     "detector/cycle_detector.py is a hand-written DFS (NetworkX only stores the graph)."),
+    ("Detection vs prevention vs recovery", "Prevention designs the system so a condition can never hold; detection finds a deadlock after it happens; recovery breaks it.",
+     "Lock-order analysis hints at prevention (one global lock order). Detection is the DFS. Recovery is the simulated abort in the Recovery Lab."),
+    ("CPU scheduling and priority", "The scheduler decides which process uses the CPU next; a lower priority gets less time when processes compete.",
+     "'Consider Lowering Priority' and the Lower priority operation (nice 10 on Linux/macOS, Below Normal on Windows)."),
+    ("CPU % vs CPU time", "CPU % is current use; CPU time is the total CPU seconds consumed since the process started.",
+     "Two separate columns. Cumulative CPU time is not wall-clock time and not a percentage."),
+    ("Memory usage", "RSS is the part of a process currently in physical RAM; it can include pages shared with other processes.",
+     "RAM column and the memory estimate, which is labelled an estimate for exactly this reason."),
+    ("Process signals", "On Linux/macOS, SIGTERM asks a program to exit, SIGKILL ends it instantly, SIGSTOP/SIGCONT suspend and resume.",
+     "Terminate, Force kill, Suspend, Resume. On Windows psutil's terminate is immediate, so the warning says so."),
+    ("Simulation vs real monitoring", "The simulator models locks inside this program. Monitoring measures other programs but cannot see their internal mutexes.",
+     "The two are labelled separately everywhere. A real-process snapshot in an incident is context, not evidence about the simulated deadlock."),
+]
